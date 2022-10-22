@@ -10,6 +10,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hackaton.cloud.shared.TipoUsuario;
 
 //import io.swagger.annotations.ApiModelProperty;
 
@@ -37,7 +38,7 @@ public class Usuario {
     private Long matricula;
 
     @Column(nullable = false)
-    private int tipoUsuario;
+    private TipoUsuario tipoUsuario;
 
     @Column(nullable = false)
     private String status;
@@ -82,11 +83,11 @@ public class Usuario {
         this.matricula = matricula;
     }
 
-    public int getTipoUsuario(){
+    public TipoUsuario getTipoUsuario(){
         return tipoUsuario;
     }
 
-    public void setTipoUsuario(int tipoUsuario){
+    public void setTipoUsuario(TipoUsuario tipoUsuario){
         this.tipoUsuario = tipoUsuario;
     }
 
