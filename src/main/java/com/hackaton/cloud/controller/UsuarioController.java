@@ -34,7 +34,7 @@ public class UsuarioController {
     UsuarioService _usuarioService;
 
     @GetMapping()
-    public ResponseEntity<Page<Usuario>> obterTodos(@PageableDefault(page=0, size=4) Pageable pageable) {
+    public ResponseEntity<Page<Usuario>> obterTodos(@PageableDefault(page=0, size=10) Pageable pageable) {
         if( _usuarioService.obterTodos(pageable).isEmpty()) {
            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
