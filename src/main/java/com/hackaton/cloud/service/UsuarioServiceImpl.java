@@ -39,16 +39,20 @@ public class UsuarioServiceImpl implements UsuarioService {
 		return encontrado;
 	}
 
+    public void emailDeUsuarioJaExiste(String email) {
+        Optional<Usuario> usuarioProcurado = this._usuarioRepository.findByEmail(email);
+
+        if (usuarioProcurado.isPresent()) {
+            throw new BadRequestException("Usuário com o email: " + email + " já encontrado :(");
+        }
+    }
+
     @Override
-    public Usuario adicionarCoordenador(UsuarioDtoCadastro usuarioDto) {
+    public Usuario adicionarUsuario(UsuarioDtoCadastro usuarioDto) {
         ModelMapper mapper = new ModelMapper();
 
         Usuario novoUsuario = mapper.map(usuarioDto, Usuario.class);
-        Optional<Usuario> usuarioProcurado = this._usuarioRepository.findByEmail(novoUsuario.getEmail());
-
-        if (usuarioProcurado.isPresent()) {
-            throw new BadRequestException("Usuário com o email: " + novoUsuario.getEmail() + " já encontrado :(");
-        }
+        emailDeUsuarioJaExiste(novoUsuario.getEmail());
 
         if (novoUsuario.getStatus() == null) {
             novoUsuario.setStatus("");
@@ -75,5 +79,34 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         return matricula;
     }
+
+    @Override
+    public Usuario atualizarUsuario(Long id, UsuarioDtoCadastro usuario) {
+        Optional<Usuario> usuarioAntigo = obterPorId(id);
+        ModelMapper mapper = new ModelMapper();
+
+        Usuario usuarioAtualizado = mapper.map(usuario, Usuario.class);
+        usuarioAtualizado.setId(id);
+
+        emailDeUsuarioJaExiste(usuarioAtualizado.getEmail());
+        usuarioAtualizado.setMatricula(usuarioAntigo.get().getMatricula());
+
+        if (usuarioAtualizado.getStatus() == null) {
+            usuarioAtualizado.setStatus("");
+        }
+
+        return this._usuarioRepository.save(usuarioAtualizado);
+    }
+
+    @Override
+	public void deletarUsuario(Long id) {
+		Optional<Usuario> usuario = obterPorId(id);
+
+		if (!usuario.isPresent()) {
+			throw new NotFoundException("Não existe equipe com o id informado: " + id);
+		}
+
+		this._usuarioRepository.deleteById(id);
+	}
 
 }

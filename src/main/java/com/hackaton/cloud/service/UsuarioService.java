@@ -12,6 +12,7 @@ import com.hackaton.cloud.shared.UsuarioDtoCadastro;
 public interface UsuarioService {
     Page<Usuario> obterTodos(Pageable pageable);
     Optional<Usuario> obterPorId(Long id);
-    Usuario adicionarCoordenador(UsuarioDtoCadastro usuarioDto);
-
+    Usuario adicionarUsuario(UsuarioDtoCadastro usuarioDto);
+    Usuario atualizarUsuario(Long id, UsuarioDtoCadastro usuario);
+    void deletarUsuario(Long id);
 }
