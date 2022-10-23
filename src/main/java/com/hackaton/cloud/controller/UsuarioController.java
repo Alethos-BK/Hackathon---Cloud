@@ -61,7 +61,7 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<Usuario> adicionarUsuario(@Valid UsuarioDtoCadastro usuario) {
+    public ResponseEntity<Usuario> adicionarUsuario(@Valid @RequestBody UsuarioDtoCadastro usuario) {
         Usuario novousuario = _usuarioService.adicionarUsuario(usuario);
         return new ResponseEntity<>(novousuario, HttpStatus.OK);
     }
