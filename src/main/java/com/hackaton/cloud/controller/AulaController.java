@@ -1,5 +1,6 @@
 package com.hackaton.cloud.controller;
 
+
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -19,50 +20,51 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.hackaton.cloud.model.Usuario;
-import com.hackaton.cloud.service.UsuarioService;
-import com.hackaton.cloud.shared.UsuarioDtoCadastro;
+
+import com.hackaton.cloud.model.Aula;
+import com.hackaton.cloud.service.AulaService;
+import com.hackaton.cloud.shared.AulaDto;
 
 import io.swagger.annotations.Api;
+
 @RestController
-@RequestMapping("/api/usuarios")
+@RequestMapping("/api/aulas")
 @Api
-public class UsuarioController {
-    
+public class AulaController {
+
     @Autowired
-    UsuarioService _usuarioService;
+    AulaService _aulaService;
 
     @GetMapping()
-    public ResponseEntity<Page<Usuario>> obterTodos(@PageableDefault(page=0, size=10) Pageable pageable) {
-        if( _usuarioService.obterTodos(pageable).isEmpty()) {
+    public ResponseEntity<Page<Aula>> obterTodos(@PageableDefault(page=0, size=10) Pageable pageable) {
+        if( _aulaService.obterTodos(pageable).isEmpty()) {
            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity<>(_usuarioService.obterTodos(pageable), HttpStatus.OK);
+        return new ResponseEntity<>(_aulaService.obterTodos(pageable), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Usuario>> obterPorId(@PathVariable(value = "id") Long id) {
-        Optional<Usuario> usuario = _usuarioService.obterPorId(id);
+    public ResponseEntity<Optional<Aula>> obterPorId(@PathVariable(value = "id") Long id) {
+        Optional<Aula> usuario = _aulaService.obterPorId(id);
         return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Usuario> adicionarCoordenador(@Valid UsuarioDtoCadastro usuario) {
-        Usuario novousuario = _usuarioService.adicionarUsuario(usuario);
-        return new ResponseEntity<>(novousuario, HttpStatus.OK);
+    public ResponseEntity<Aula> adicionarAula(AulaDto Aula) {
+        Aula novoAula = _aulaService.adicionarAula(Aula);
+        return new ResponseEntity<>(novoAula, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Usuario> atualizar(@PathVariable(value = "id") Long id, @Valid UsuarioDtoCadastro usuario) {
-        return new ResponseEntity<>(_usuarioService.atualizarUsuario(id, usuario), HttpStatus.OK);
+    public ResponseEntity<Aula> atualizar(@PathVariable(value = "id") Long id, @Valid AulaDto Aula) {
+        return new ResponseEntity<>(_aulaService.atualizarAula(id, Aula), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable(value = "id") Long id) {
-        _usuarioService.deletarUsuario(id);
+        _aulaService.deletarAula(id);
         
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 }

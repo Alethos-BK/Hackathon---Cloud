@@ -12,13 +12,15 @@ import javax.validation.constraints.NotBlank;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hackaton.cloud.shared.TipoUsuario;
 
+import io.swagger.annotations.ApiModelProperty;
+
 //import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @Table(name = "usuario")
 public class Usuario {
     @Id
-    //@ApiModelProperty(value = "Id usuario (fk)")
+    @ApiModelProperty(value = "Id usuario (fk)")
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "generator_usuario")
     private Long id;
 
