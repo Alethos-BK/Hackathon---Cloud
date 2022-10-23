@@ -8,8 +8,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.hackaton.cloud.controller.TurmaController;
 import com.hackaton.cloud.exception.NotFoundException;
 import com.hackaton.cloud.model.Aula;
+import com.hackaton.cloud.model.Turma;
 import com.hackaton.cloud.repository.AulaRepository;
 import com.hackaton.cloud.shared.AulaDto;
 
@@ -18,6 +20,9 @@ public class AulaServiceImpl implements AulaService {
 
     @Autowired
     private AulaRepository _aulaRepository;
+
+    @Autowired
+    private TurmaService _turmaService;
 
     @Override
     public Page<Aula> obterTodos(Pageable pageable) {
@@ -35,9 +40,12 @@ public class AulaServiceImpl implements AulaService {
     }
 
     @Override
-    public Aula adicionarAula(AulaDto aula) {
+    public Aula adicionarAula(Long idTurma,AulaDto aula) {
+        Optional<Turma> turma = _turmaService.obterPorId(idTurma);
+
         ModelMapper mapper = new ModelMapper();
         Aula novaAula = mapper.map(aula, Aula.class);
+        novaAula.setTurma(turma.get());
 
         return this._aulaRepository.save(novaAula);    
     }

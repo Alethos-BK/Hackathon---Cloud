@@ -50,9 +50,9 @@ public class AulaController {
         return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<Aula> adicionarAula(AulaDto Aula) {
-        Aula novoAula = _aulaService.adicionarAula(Aula);
+    @PostMapping("/{idTurma}")
+    public ResponseEntity<Aula> adicionarAula(@PathVariable(value = "idTurma") Long idTurma, @RequestBody AulaDto Aula) {
+        Aula novoAula = _aulaService.adicionarAula(idTurma, Aula);
         return new ResponseEntity<>(novoAula, HttpStatus.OK);
     }
 
