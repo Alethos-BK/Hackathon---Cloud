@@ -3,6 +3,7 @@ package com.hackaton.cloud.service;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -12,19 +13,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.hackaton.cloud.exception.BadRequestException;
 import com.hackaton.cloud.exception.NotFoundException;
+import com.hackaton.cloud.exception.UnauthorizedException;
 import com.hackaton.cloud.model.Usuario;
 import com.hackaton.cloud.repository.UsuarioRepository;
+import com.hackaton.cloud.security.JWTService;
 import com.hackaton.cloud.shared.TipoUsuario;
 import com.hackaton.cloud.shared.UsuarioDtoCadastro;
+import com.hackaton.cloud.shared.login.LoginResponse;
+
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
 
     @Autowired
     private UsuarioRepository _usuarioRepository;
+
+    @Autowired
+	private AuthenticationManager authenticationManager;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+    @Autowired
+	private JWTService jwtService;
+
+
+    private static final String headerPrefix = "Bearer ";
     
     @Override
     public Page<Usuario> obterTodos(Pageable pageable) {
@@ -65,6 +87,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         Usuario novoUsuario = mapper.map(usuarioDto, Usuario.class);
         emailDeUsuarioJaExiste(novoUsuario.getEmail());
+
+        String novaSenha = passwordEncoder.encode(novoUsuario.getSenha());
+		novoUsuario.setSenha(novaSenha);
 
         if (novoUsuario.getStatus() == null) {
             novoUsuario.setStatus("");
@@ -123,5 +148,24 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 		this._usuarioRepository.deleteById(id);
 	}
+
+    @Override
+	public LoginResponse logar(String login, String senha) {
+
+		try {
+			Authentication autenticacao = authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(login, senha, Collections.emptyList()));
+
+			SecurityContextHolder.getContext().setAuthentication(autenticacao);
+			String token = headerPrefix + jwtService.gerarToken(autenticacao);
+
+			Optional<Usuario> usuario = _usuarioRepository.findByEmail(login);
+			return new LoginResponse(usuario.get(), token);
+
+		} catch (Exception e) {
+			throw new UnauthorizedException("Credenciais inválidas :(");
+		}
+	}
+
 
 }

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 
 import com.hackaton.cloud.model.Usuario;
 import com.hackaton.cloud.shared.UsuarioDtoCadastro;
+import com.hackaton.cloud.shared.login.LoginResponse;
 
 public interface UsuarioService {
     Page<Usuario> obterTodos(Pageable pageable);
@@ -18,4 +19,5 @@ public interface UsuarioService {
     void deletarUsuario(Long id);
     List<Usuario> obterTodosAlunos();
     List<Usuario> obterTodosProfessores();
+    LoginResponse logar(String login, String senha);
 }
