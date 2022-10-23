@@ -1,5 +1,6 @@
 package com.hackaton.cloud.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -47,8 +48,20 @@ public class UsuarioController {
         return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 
+    @GetMapping("/todosAlunos")
+    public ResponseEntity<List<Usuario>> obterTodosAlunos() {
+        List<Usuario> alunos = _usuarioService.obterTodosAlunos();
+        return new ResponseEntity<>(alunos, HttpStatus.OK);
+    }
+
+    @GetMapping("/todosProfessores")
+    public ResponseEntity<List<Usuario>> obterTodosProfessores() {
+        List<Usuario> alunos = _usuarioService.obterTodosProfessores();
+        return new ResponseEntity<>(alunos, HttpStatus.OK);
+    }
+
     @PostMapping
-    public ResponseEntity<Usuario> adicionarCoordenador(@Valid UsuarioDtoCadastro usuario) {
+    public ResponseEntity<Usuario> adicionarUsuario(@Valid UsuarioDtoCadastro usuario) {
         Usuario novousuario = _usuarioService.adicionarUsuario(usuario);
         return new ResponseEntity<>(novousuario, HttpStatus.OK);
     }

@@ -3,6 +3,7 @@ package com.hackaton.cloud.service;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -16,6 +17,7 @@ import com.hackaton.cloud.exception.BadRequestException;
 import com.hackaton.cloud.exception.NotFoundException;
 import com.hackaton.cloud.model.Usuario;
 import com.hackaton.cloud.repository.UsuarioRepository;
+import com.hackaton.cloud.shared.TipoUsuario;
 import com.hackaton.cloud.shared.UsuarioDtoCadastro;
 
 @Service
@@ -27,6 +29,16 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public Page<Usuario> obterTodos(Pageable pageable) {
         return this._usuarioRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<Usuario> obterTodosAlunos() {
+        return this._usuarioRepository.findByTipoUsuario(TipoUsuario.ALUNO);
+    }
+
+    @Override
+    public List<Usuario> obterTodosProfessores() {
+        return this._usuarioRepository.findByTipoUsuario(TipoUsuario.PROFESSOR);
     }
 
     @Override
