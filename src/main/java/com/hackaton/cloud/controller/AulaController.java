@@ -57,7 +57,7 @@ public class AulaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Aula> atualizar(@PathVariable(value = "id") Long id, @Valid AulaDto Aula) {
+    public ResponseEntity<Aula> atualizar(@PathVariable(value = "id") Long id, @Valid @RequestBody AulaDto Aula) {
         return new ResponseEntity<>(_aulaService.atualizarAula(id, Aula), HttpStatus.OK);
     }
 

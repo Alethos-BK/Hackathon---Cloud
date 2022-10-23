@@ -66,7 +66,6 @@ public class UsuarioServiceImpl implements UsuarioService {
         String matricula = "";
 
        LocalDateTime data = LocalDateTime.now();
-       Instant horaAgora = Instant.now();
 
        matricula = matricula
             + data.getYear()
@@ -88,7 +87,11 @@ public class UsuarioServiceImpl implements UsuarioService {
         Usuario usuarioAtualizado = mapper.map(usuario, Usuario.class);
         usuarioAtualizado.setId(id);
 
-        emailDeUsuarioJaExiste(usuarioAtualizado.getEmail());
+         Optional<Usuario> usuarioProcurado = this._usuarioRepository.findByEmail(usuarioAtualizado.getEmail());
+
+        if (usuarioProcurado.isPresent() && !usuarioAntigo.get().getEmail().equals(usuarioAtualizado.getEmail())) {
+            throw new BadRequestException("Usuário com o email: " + usuarioAtualizado.getEmail() + " já encontrado :(");
+        }
         usuarioAtualizado.setMatricula(usuarioAntigo.get().getMatricula());
 
         if (usuarioAtualizado.getStatus() == null) {
