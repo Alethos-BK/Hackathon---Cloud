@@ -27,6 +27,9 @@ import com.hackaton.cloud.service.TurmaService;
 import com.hackaton.cloud.shared.TurmaDto;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping("/api/turmas")
@@ -38,6 +41,12 @@ public class TurmaController {
     @Autowired
     AlunoETurmaService _alunoETurmaService;
 
+    @ApiOperation(value = "Retorna todos as turmas :)")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Lista de turmas encontrada com sucesso :)"),
+        @ApiResponse(code = 204, message = "Não existe turma cadastrado :("),
+        @ApiResponse(code = 500, message = "Vish quinhetão, da uma olhadinha no código ;-;") 
+    })
     @GetMapping()
     public ResponseEntity<Page<Turma>> obterTodos(@PageableDefault(page=0, size=10) Pageable pageable) {
         if( _TurmaService.obterTodos(pageable).isEmpty()) {
@@ -47,23 +56,46 @@ public class TurmaController {
         return new ResponseEntity<>(_TurmaService.obterTodos(pageable), HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Retorna turma por id")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Turma encontrado com sucesso :)"),
+        @ApiResponse(code = 204, message = "Não existe usuario cadastrado com esse id:("),
+        @ApiResponse(code = 500, message = "Vish quinhetão, da uma olhadinha no código ;-;") 
+    })
     @GetMapping("/{id}")
     public ResponseEntity<Optional<Turma>> obterPorId(@PathVariable(value = "id") Long id) {
         Optional<Turma> usuario = _TurmaService.obterPorId(id);
         return new ResponseEntity<>(usuario, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Adiciona nova turma")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Turma cadastrado com sucessp :)"),
+        @ApiResponse(code = 400, message = "Amigo, revisa ai teus parametros por favor :("),
+        @ApiResponse(code = 500, message = "Vish quinhetão, da uma olhadinha no código ;-;") 
+    })
     @PostMapping("/{idProfessor}")
     public ResponseEntity<Turma> adicionarTurma(@PathVariable(value = "idProfessor") Long idProfessor, @RequestBody TurmaDto Turma) {
         Turma novoTurma = _TurmaService.adicionarTurma(idProfessor, Turma);
         return new ResponseEntity<>(novoTurma, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Atualiza Turma")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Turma atualizado com sucessp :)"),
+        @ApiResponse(code = 400, message = "Amigo, revisa ai teus parametros por favor :("),
+        @ApiResponse(code = 500, message = "Vish quinhetão, da uma olhadinha no código ;-;") 
+    })
     @PutMapping("/{id}")
     public ResponseEntity<Turma> atualizar(@PathVariable(value = "id") Long id, @Valid @RequestBody TurmaDto Turma) {
         return new ResponseEntity<>(_TurmaService.atualizarTurma(id, Turma), HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Deleta turma por id")
+    @ApiResponses(value = {
+        @ApiResponse(code = 204, message = "Turma deletado com sucesso :)"),
+        @ApiResponse(code = 500, message = "Vish quinhetão, da uma olhadinha no código ;-;") 
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable(value = "id") Long id) {
         _TurmaService.deletarTurma(id);
@@ -71,6 +103,11 @@ public class TurmaController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @ApiOperation(value = "Obtem todos os alunos da turma")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Lista de alunos da turma encontrada :)"),
+        @ApiResponse(code = 500, message = "Vish quinhetão, da uma olhadinha no código ;-;") 
+    })
     @GetMapping("idTurma/{idTurma}")
     public ResponseEntity<List<Optional<Usuario>>> obterUsuariosDaTurma(@PathVariable(value = "idTurma") Long idTurma) {
         List<Optional<Usuario>> usuarios = _alunoETurmaService.obterUsuariosDaTurma(idTurma);
@@ -78,8 +115,13 @@ public class TurmaController {
         return new ResponseEntity<>(usuarios, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "Faz ligação de aluno e turma")
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Sucesso :)"),
+        @ApiResponse(code = 500, message = "Vish quinhetão, da uma olhadinha no código ;-;") 
+    })
     @PostMapping("/{idTurma}/{idAluno}")
-    public ResponseEntity<Void> adicionarTurma(@PathVariable(value = "idTurma") Long idTurma, @PathVariable(value = "idAluno") Long idAluno) {
+    public ResponseEntity<Void> adicionarLigacaoTurmaAluno(@PathVariable(value = "idTurma") Long idTurma, @PathVariable(value = "idAluno") Long idAluno) {
         _alunoETurmaService.adicionarAluno(idAluno, idTurma);
         return new ResponseEntity<>(HttpStatus.OK);
     }
